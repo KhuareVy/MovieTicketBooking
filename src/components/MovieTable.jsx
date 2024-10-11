@@ -27,6 +27,7 @@ const MovieTable = ({ movies, onEdit, onDelete }) => {
       dataIndex: 'description',
       key: 'description',
       ellipsis: true,
+      render: (text) => text.length > 50 ? `${text.substring(0, 100)}...` : text,
     },
     {
       title: 'Thể Loại',

@@ -7,7 +7,7 @@ import MovieTable from './MovieTable';
 import MovieForm from './MovieForm';
 import MovieSearch from './MovieSearch';
 import { transformMovieData, transformAMovieData } from '../utils/transformData';
-import { _get, _post, _put } from '../config/axiosConfig';
+import { _get, _post, _put, _delete } from '../config/axiosConfig';
 
 const MovieManagement = () => {
   const [movies, setMovies] = useState([]);
@@ -59,7 +59,8 @@ const MovieManagement = () => {
     const updatedMovies = movies.filter(movie => movie.id !== id);
     Modal.confirm({
       title: 'Bạn có chắc chắn muốn xóa phim này?',
-      onOk: () => {
+      onOk: async () => {
+        await _delete(`/movies/${id}`);
         setMovies(updatedMovies);
         setFilteredMovies(updatedMovies);
         message.success({
