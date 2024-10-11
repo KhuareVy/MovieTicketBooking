@@ -11,19 +11,19 @@ const AxiosInstance = axios.create({
 });
 
 const _get = (url, config = {}) => {
-    return AxiosInstance.get(url, config);
+  return AxiosInstance.get(url, config);
 };
   
 const _delete = (url, config = {}) => {
-return AxiosInstance.delete(url, config);
+  return AxiosInstance.delete(url, config);
 };
   
 const _put = (url, data = {}, config = {}) => {
-return AxiosInstance.put(url, data, config);
+  return AxiosInstance.put(url, data, config);
 };
   
 const _post = (url, data = {}, config = {}) => {
-return AxiosInstance.post(url, data, config);
+  return AxiosInstance.post(url, data, config);
 };
 
 export { _get, _delete, _put, _post, AxiosInstance };

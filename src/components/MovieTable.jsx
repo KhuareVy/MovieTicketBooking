@@ -29,6 +29,36 @@ const MovieTable = ({ movies, onEdit, onDelete }) => {
       ellipsis: true,
     },
     {
+      title: 'Thể Loại',
+      dataIndex: 'genre',
+      key: 'genre',
+    },
+    {
+      title: 'Diễn Viên',
+      dataIndex: 'actor',
+      key: 'actor',
+    },
+    {
+      title: 'Đạo Diễn',
+      dataIndex: 'director',
+      key: 'director',
+    },
+    {
+      title: 'Quốc Gia',
+      dataIndex: 'country',
+      key: 'country',
+    },
+    {
+      title: 'Thời Lượng',
+      dataIndex: 'duration',
+      key: 'duration',
+    },
+    {
+      title: 'Ngày Phát Hành',
+      dataIndex: 'releaseDate',
+      key: 'releaseDate',
+    },
+    {
       title: 'Hành Động',
       key: 'actions',
       render: (_, record) => (

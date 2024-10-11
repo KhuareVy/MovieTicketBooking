@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Select, Button, message, DatePicker } from 'antd';
+import { Modal, Form, Input, Select, Button, message, DatePicker, InputNumber } from 'antd';
 import { _get, _post } from '../config/axiosConfig';
+// import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 
@@ -99,27 +100,44 @@ const MovieForm = ({ visible, onCancel, onOk, form, editingMovie }) => {
     fetchCountrys();
   }, []);
 
+  useEffect(() => {
+    if (editingMovie) {
+      form.setFieldsValue({
+        ...editingMovie,
+        // releaseDate: dayjs(editingMovie.releaseDate),
+      });
+    }
+  }, [editingMovie, form]);
+
   const handleGenreChange = (value) => {
     if (value === 'addNew') {
       setIsGenreModalVisible(true);
+    } else {
+      form.setFieldsValue({ genre: value });
     }
   };
 
   const handleActorChange = (value) => {
     if (value.includes('addNew')) {
       setIsActorModalVisible(true);
+    } else {
+      form.setFieldsValue({ actors: value });
     }
   };
 
   const handleDirectorChange = (value) => {
     if (value === 'addNew') {
       setIsDirectorModalVisible(true);
+    } else {
+      form.setFieldsValue({ director: value });
     }
   };
 
   const handleCountryChange = (value) => {
     if (value === 'addNew') {
       setIsCountryModalVisible(true);
+    } else {
+      form.setFieldsValue({ country: value });
     }
   };
 
@@ -202,6 +220,7 @@ const MovieForm = ({ visible, onCancel, onOk, form, editingMovie }) => {
             name="movieCode"
             label="Mã Phim"
             rules={[{ required: true, message: 'Vui lòng nhập mã phim!' }]}
+            disabled={true}
           >
             <Input />
           </Form.Item>
@@ -288,6 +307,21 @@ const MovieForm = ({ visible, onCancel, onOk, form, editingMovie }) => {
               ))}
               <Select.Option value="addNew">Thêm mới</Select.Option>
             </Select>
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label="Thời Lượng"
+            rules={[{ required: true, message: 'Vui lòng nhập thời lượng!' }]}>
+            <InputNumber min={60} />
+          </Form.Item>
+          <Form.Item
+            name="releaseDate"
+            label="Ngày Phát Hành"
+            rules={[{ required: true, message: 'Vui lòng nhập ngày phát hành!' }]}>
+            <DatePicker onChange={(date, dateString) => {
+              console.log(date, dateString);
+            }
+            } />
           </Form.Item>
         </Form>
       </Modal>

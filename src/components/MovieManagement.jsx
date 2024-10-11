@@ -6,8 +6,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import MovieTable from './MovieTable';
 import MovieForm from './MovieForm';
 import MovieSearch from './MovieSearch';
-import { transformMovieData } from '../utils/transformData';
-import { _get } from '../config/axiosConfig';
+import { transformMovieData, transformAMovieData } from '../utils/transformData';
+import { _get, _post, _put } from '../config/axiosConfig';
 
 const MovieManagement = () => {
   const [movies, setMovies] = useState([]);
@@ -26,6 +26,8 @@ const MovieManagement = () => {
           const transformedData = transformMovieData(response.data);
           setMovies(transformedData);
           setFilteredMovies(transformedData);
+
+          console.log('transformedData:', transformedData);
         } else {
           console.error('API response is not an array:', response.data);
           message.error('Failed to fetch movies');
@@ -67,22 +69,61 @@ const MovieManagement = () => {
     });
   };
 
-  const handleModalOk = () => {
-    form.validateFields().then(values => {
+  const handleModalOk = async () => {
+    try {
+      const values = await form.validateFields();
       let updatedMovies;
       if (editingMovie) {
-        updatedMovies = movies.map(movie => movie.id === editingMovie.id ? { ...movie, ...values } : movie);
-      } else {
-        const newMovie = {
-          id: Math.max(...movies.map(m => m.id), 0) + 1,
-          ...values,
+        const updatedMovieData = {
+          title: values.title,
+          duration: values.duration,
+          releaseDate: values.releaseDate,
+          description: values.description,
+          posterURL: values.image,
+          trailerURL: values.trailer,
+          directorID: values.director,
+          actorIDs: values.actors,
+          countryID: values.country,
+          genreID: values.genre,
         };
+        console.log('updatedMovieData:', updatedMovieData);
+        console.log('values:', values);
+        const response = await _put(`/movies/${editingMovie.id}`, updatedMovieData);
+        const updatedMovie = response.data;
+        updatedMovies = movies.map(movie => movie.id === editingMovie.id ? transformAMovieData(updatedMovie) : movie);
+
+        message.success({
+          content: 'Cập nhật phim thành công',
+        });
+      } else {
+        const newMovieData = {
+          title: values.title,
+          duration: values.duration,
+          releaseDate: values.releaseDate,
+          description: values.description,
+          posterURL: values.image,
+          trailerURL: values.trailer,
+          directorID: values.director,
+          actorIDs: values.actors,
+          countryID: values.country,
+          genreID: values.genre,
+        };
+        // console.log('newMovieData:', newMovieData);
+        const response = await _post('/movies', newMovieData);
+        const newMovie = response.data;
         updatedMovies = [...movies, newMovie];
+
+        message.success({
+          content: 'Thêm mới phim thành công',
+        });
       }
       setMovies(updatedMovies);
       setFilteredMovies(updatedMovies);
       setIsModalVisible(false);
-    });
+    } catch (error) {
+      console.error('Error saving movie:', error);
+      message.error('Failed to save movie');
+    }
   };
 
   const handleSearch = (value) => {
