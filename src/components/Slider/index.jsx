@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { Carousel } from 'antd';
 import slider1 from '../../assets/images/slider1.jpg';

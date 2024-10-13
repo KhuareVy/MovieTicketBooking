@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button,Layout, theme } from 'antd'
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons'
 import Sidebar from './Sidebar'
-import CustomHeader from './Header'
+// import CustomHeader from './Header'
 import AdminContent from './AdminContent';
 import './AdminPage.css'
 
@@ -29,7 +29,7 @@ const AdminPage = () => {
 
       <Layout >
         <Header className="header">
-          <CustomHeader />
+          {/* <CustomHeader /> */}
         </Header>
         <Content className="content"  style={{ borderRadius: borderRadiusLG }}>
           <AdminContent />
