@@ -1,14 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { Table, Select, Input, Button, Modal, Form, DatePicker, TimePicker, message } from 'antd';
+import { Table, Select, Input, Button, Modal, Form, DatePicker, TimePicker, message, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { _get, _post } from '../config/axiosConfig';
 
 const { Option } = Select;
-
-// Hardcoded data for this exercise
-const cinemas = ['CGV Hùng Vương Plaza', 'CGV Thảo Điền Pearl', 'CGV Vincom Thủ Đức'];
-const movies = ['Movie1', 'Movie2', 'Movie3'];
-const rooms = ['Room1', 'Room2', 'Room3'];
 
 export default function MovieScheduleManager() {
   const [schedules, setSchedules] = useState([]);
@@ -18,20 +15,80 @@ export default function MovieScheduleManager() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState(null);
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(true);
+  const [cinemas, setCinemas] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    // Simulating API fetch
-    // In a real scenario, you would fetch data from an API here
-    setSchedules([
-      { id: 1, date: '2023-05-01', cinema: 'CGV Hùng Vương Plaza', movie: 'Movie1', room: 'Room1', showtime: '14:00' },
-      { id: 2, date: '2023-05-01', cinema: 'CGV Thảo Điền Pearl', movie: 'Movie2', room: 'Room2', showtime: '16:30' },
-      { id: 3, date: '2023-05-02', cinema: 'CGV Vincom Thủ Đức', movie: 'Movie3', room: 'Room3', showtime: '19:00' },
-    ]);
+    fetchSchedules();
+    fetchCinemas();
+    fetchMovies();
   }, []);
 
   useEffect(() => {
     filterSchedules();
   }, [schedules, selectedCinema, searchText]);
+
+  const fetchSchedules = async () => {
+    try {
+      const response = await _get('/showtimes');
+      const transformedData = response.data.map(item => ({
+        id: item.id,
+        date: item.date,
+        cinema: item.cineama.cinemaName,
+        movie: item.movie.title,
+        room: `Rạp ${item.cineama.screenNumber}`,
+        showtime: item.startTime,
+      }));
+      setSchedules(transformedData);
+    } catch (error) {
+      console.error('Error fetching schedules:', error);
+      message.error('Failed to fetch schedules');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCinemas = async () => {
+    try {
+      const response = await _get('/cinemas');
+      if(Array.isArray(response.data)) {
+        const cinemaOptions = response.data.map(cinema => ({
+          label: cinema.name,
+          value: cinema.id,
+          screens: cinema.screens,
+        }));
+        setCinemas(cinemaOptions);
+      } else {
+        console.error('API response is not an array:', response.data);
+        message.error('Failed to fetch cinemas');
+      }
+    } catch (error) {
+      console.error('Error fetching cinemas:', error);
+      message.error('Failed to fetch cinemas');
+    }
+  };
+
+  const fetchMovies = async () => {
+    try {
+      const response = await _get('/movies');
+      if (Array.isArray(response.data)) {
+        const movieOptions = response.data.map(movie => ({
+          label: movie.title,
+          value: movie.id,
+          duration: movie.duration,
+        }));
+        setMovies(movieOptions);
+      } else {
+        console.error('API response is not an array:', response.data);
+        message.error('Failed to fetch movies');
+      }
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+      message.error('Failed to fetch movies');
+    }
+  };
 
   const filterSchedules = () => {
     let filtered = [...schedules];
@@ -65,21 +122,43 @@ export default function MovieScheduleManager() {
   };
 
   const handleOk = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then(async (values) => {
       const newSchedule = {
         ...values,
         date: values.date.format('YYYY-MM-DD'),
         showtime: values.showtime.format('HH:mm'),
       };
 
-      if (checkConflicts(newSchedule)) {
-        Modal.confirm({
-          title: 'Trùng lịch chiếu',
-          content: 'Có một lịch chiếu bị trùng. Bạn có muốn tiếp tục không?',
-          onOk: () => saveSchedule(newSchedule),
-        });
-      } else {
-        saveSchedule(newSchedule);
+      // console.log('newSchedule:', newSchedule);
+      const selectedMovie = movies.find(movie => movie.value === newSchedule.movie);
+      if (!selectedMovie) {
+        message.error('Selected movie not found');
+        return;
+      }
+
+      const endTime = dayjs(newSchedule.showtime, 'HH:mm')
+      .add(selectedMovie.duration, 'minute')
+      .format('HH:mm');
+
+      const scheduleData = {
+        date: newSchedule.date,
+        startTime: newSchedule.showtime,
+        endTime: endTime,
+        movieID: newSchedule.movie,
+        screenID: newSchedule.room,
+      };
+
+      // console.log('scheduleData:', scheduleData);
+      try {
+        await _post('/showtimes', scheduleData);
+        setLoading(true);
+        fetchSchedules();
+        setIsModalVisible(false);
+        message.success('Thêm lịch chiếu thành công');
+      } catch (error) {
+        console.error('Error saving schedule:', error);
+        const errorMessage = error.response?.data?.error || 'Trùng lịch chiếu';
+        message.error(errorMessage);
       }
     });
   };
@@ -118,6 +197,21 @@ export default function MovieScheduleManager() {
     );
   };
 
+  const handleCinemaChange = (cinemaId) => {
+    const selectedCinema = cinemas.find(cinema => cinema.value === cinemaId);
+    if (selectedCinema) {
+      setRooms(selectedCinema.screens);
+      form.setFieldsValue({ room: null }); // Reset room field when cinema changes
+    }
+  };
+
+  // const handleMovieChange = (movieId) => {
+  //   const selectedMovie = movies.find(movie => movie.value === movieId);
+  //   if (selectedMovie) {
+  //     form.setFieldsValue({ duration: selectedMovie.duration });
+  //   }
+  // }
+
   const columns = [
     {
       title: 'Ngày chiếu',
@@ -144,15 +238,15 @@ export default function MovieScheduleManager() {
       dataIndex: 'showtime',
       sorter: (a, b) => dayjs(a.showtime, 'HH:mm').unix() - dayjs(b.showtime, 'HH:mm').unix(),
     },
-    {
-      title: 'Hành động',
-      render: (_, record) => (
-        <>
-          <Button icon={<EditOutlined />} onClick={() => showModal(record)}>Sửa</Button>
-          <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)} style={{ marginLeft: 8 }} danger={true}>Xóa</Button>
-        </>
-      ),
-    },
+    // {
+    //   title: 'Hành động',
+    //   render: (_, record) => (
+    //     <>
+    //       <Button icon={<EditOutlined />} onClick={() => showModal(record)}>Sửa</Button>
+    //       <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)} style={{ marginLeft: 8 }} danger={true}>Xóa</Button>
+    //     </>
+    //   ),
+    // },
   ];
 
   return (
@@ -166,7 +260,7 @@ export default function MovieScheduleManager() {
         >
           <Option value="ALL">Tất cả</Option>
           {cinemas.map(cinema => (
-            <Option key={cinema} value={cinema}>{cinema}</Option>
+            <Option key={cinema.value} value={cinema.value}>{cinema.label}</Option>
           ))}
         </Select>
         <Input.Search
@@ -180,12 +274,16 @@ export default function MovieScheduleManager() {
         </Button>
       </div>
 
-      <Table
+      {loading ? (
+        <Spin size="large" style={{ display: 'block', margin: '20px auto' }} />
+      ) : (
+        <Table
         columns={columns}
         dataSource={filteredSchedules}
         rowKey="id"
         scroll={{ x: true }}
       />
+      )}
 
       <Modal
         title={editingSchedule ? "Edit Schedule" : "Add Schedule"}
@@ -198,23 +296,23 @@ export default function MovieScheduleManager() {
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="cinema" label="Cinema" rules={[{ required: true }]}>
-            <Select>
+            <Select onChange={handleCinemaChange}>
               {cinemas.map(cinema => (
-                <Option key={cinema} value={cinema}>{cinema}</Option>
+                <Option key={cinema.value} value={cinema.value}>{cinema.label}</Option>
               ))}
             </Select>
           </Form.Item>
           <Form.Item name="movie" label="Movie" rules={[{ required: true }]}>
             <Select>
               {movies.map(movie => (
-                <Option key={movie} value={movie}>{movie}</Option>
+                <Option key={movie.value} value={movie.value}>{movie.label}</Option>
               ))}
             </Select>
           </Form.Item>
           <Form.Item name="room" label="Room" rules={[{ required: true }]}>
             <Select>
               {rooms.map(room => (
-                <Option key={room} value={room}>{room}</Option>
+                <Option key={room.id} value={room.id}>{`Rạp ${room.screenNumber}`}</Option>
               ))}
             </Select>
           </Form.Item>
