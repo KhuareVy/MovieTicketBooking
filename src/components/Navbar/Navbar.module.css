@@ -1,12 +1,15 @@
 :root {
     --primary-color: #f5811f;
     --secondary-color: #001529;
-    --font-light-color: #f0f0f0;
+    --font-light-color: #f8f8ff;
     --font-dark-color: #313131;
 }
 
+.btn_login:hover{
+    color: var(--primary-color);
+}
 
-.header{
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -19,13 +22,14 @@
     color: var(--font-light-color);
 }
 
-.navbar{
+.menu {
     display: flex;
-    justify-content: center;
+    flex-grow: 1;
+    justify-content: center; /* Căn giữa các mục menu */
     align-items: center;
 }
 
-.navbar a{
+.menuItem {
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -35,41 +39,104 @@
     position: relative;
 }
 
-.navbar a:hover,
-.navbar a.active{
-    color: var(--primary-color);
+.menuItem:hover,
+.menuItem:active {
+    color: var(--primary-color); /* Màu khi hover (thay đổi màu này theo ý bạn) */
 }
 
-.navbar a::before{
-    content:'';
-    position:absolute;
-    width:0;
-    top:70%;
+.menuItem::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    top: 100%;
     left: 20%;
     height: 2px;
     background-color: var(--primary-color);
-    transition: 0.3s all;
+    transition: 0.2s all;
 }
 
-.navbar a:hover::before{
+.menuItem:hover::before {
     width: 60%;
 }
 
+.menuButton {
+    display: none;
+}
+
+.login {
+    font-size: 16px;
+    margin-left: 20px; /* Khoảng cách với các mục menu */
+    color: var(--font-light-color);
+    font-weight: 600;
+    transition: 0.3s all;
+}
+
 .logo,
-.logo:hover{
+.logo:hover {
     font-size: 24px;
     font-weight: 700;
     color: var(--primary-color);
 }
 
-.btn_login{
-    color: var(--font-light-color);
-    font-size: 16px;
-    font-weight: 600;
-    transition: 0.3s all;
-}
-
-.btn_login:hover{
+.login:hover {
     color: var(--primary-color);
 }
 
+.ant-menu-horizontal {
+    background-color: transparent; /* Xóa background màu trắng */
+    border-bottom: none; /* Xóa đường viền dưới */
+}
+
+.ant-menu-submenu-popup {
+    background-color: var(--secondary-color); /* Đặt màu nền cho submenu */
+}
+
+.ant-menu-item {
+    background-color: var(--secondary-color); /* Đặt màu nền cho các mục menu */
+    color: var(--font-light-color); /* Đặt màu chữ cho các mục menu */
+}
+
+.ant-menu-item:hover {
+    background-color: var(--primary-color); /* Đặt màu nền khi hover */
+    color: var(--font-light-color); /* Đặt màu chữ khi hover */
+}
+
+@media (max-width: 768px) {
+    .menu {
+        display: none; /* Ẩn menu chính khi màn hình nhỏ */
+    }
+    .menuButton {
+        display: block; /* Hiển thị nút menu trên thiết bị nhỏ */
+    }
+}
+
+/* Thêm lớp CSS cho button */
+.button {
+    color: var(--font-light-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    color: var(--primary-color);
+}
+
+/* Thêm lớp CSS cho NavLink active */
+.activeNavLink {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Thêm lớp CSS cho dropdown menu */
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+}
