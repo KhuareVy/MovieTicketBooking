@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react'
 import './App.css'
+import AdminPage from './components/AdminPage'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserLayout from './layouts/UserLayout'
 import Home from './pages/Home'
@@ -11,20 +13,15 @@ const App = () => {
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<UserLayout />}>
-          <Route index element={<Home />} /> 
-          <Route path="/phim-dang-chieu" element={<NowShowingMovie />} />
-          <Route path="/phim-sap-chieu" element={<UpcomingMovie />} />
-          <Route path="/login" element={<Login />} />
-          
-          <Route path="*" element={<h1>Not Found</h1>} />
-      </Route>
+        <Route path="/" element={<UserLayout />}>
+            <Route index element={<Home />} /> 
+            <Route path="/phim-dang-chieu" element={<NowShowingMovie />} />
+            <Route path="/phim-sap-chieu" element={<UpcomingMovie />} />
+            <Route path="/login" element={<Login />} />
 
-
-
+            <Route path="*" element={<h1>Not Found</h1>} />
+        </Route>
       </Routes>
-
-
        {/* <Routes> */}
           {/* <Route path="/" element={<UserLayout />}>
             <Route index element={<UserLayout />} /> */}
@@ -39,6 +36,7 @@ const App = () => {
           </Route>
         </Routes> */}
     </Router>
+    <AdminPage />
   )
 }
 
