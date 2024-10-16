@@ -1,17 +1,32 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { Form, Input, Button, Typography, Row, Col } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { _post } from '../config/axiosConfig';
 
 const { Title } = Typography;
 
 const Registration = () => {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log('Registration form submitted:', values);
-    
+  const onFinish = async (values) => {
+    try {
+      const response = await _post('/auth/register', values);
+      const data = await response.data;
+      message.success('Đăng kí thành công');
+    } catch (error) {
+      const { response } = error;
+      if (response.status === 400) {
+        const errorFields = Object.keys(response.data).map((field) => ({
+          name: field,
+          errors: [response.data[field]],
+        }));
+        form.setFields(errorFields);
+      }
+      message.error('Đăng kí thất bại');
+      console.error('Registration failed:', error);
+    }
   };
 
   return (

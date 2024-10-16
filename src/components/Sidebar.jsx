@@ -3,14 +3,17 @@ import React from 'react';
 import { Menu } from 'antd';
 import { UserOutlined, VideoCameraOutlined, CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../contextAPI/AuthContext';
 
 const Sidebar = () => {
+  const {logout} = useAuth();
+
   const menuItems = [
-    {
-      key: '1',
-      icon: <UserOutlined />,
-      label: <NavLink to="users">Quản lý người dùng</NavLink>,
-    },
+    // {
+    //   key: '1',
+    //   icon: <UserOutlined />,
+    //   label: <NavLink to="users">Quản lý người dùng</NavLink>,
+    // },
     {
       key: '2',
       icon: <VideoCameraOutlined />,
@@ -26,6 +29,7 @@ const Sidebar = () => {
       icon: <LogoutOutlined />,
       label: 'Đăng xuất',
       danger: true,
+      onClick: logout,
     },
   ];
 

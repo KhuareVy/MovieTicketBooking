@@ -20,11 +20,23 @@ export default function MovieDetailPage() {
 
   const navigate = useNavigate();
 
-  const dateOptions = [
-    { label: 'Hôm Nay', value: '2024-10-15' },
-    { label: 'Thứ Tư', value: '2024-10-16' },
-    { label: 'Thứ Năm', value: '2024-10-17' },
-  ];
+  const getNext7Days = () => {
+    const days = [];
+    const today = new Date();
+    const dayNames = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      const dayName = i === 0 ? 'Hôm Nay' : dayNames[date.getDay()];
+      const formattedDate = date.toISOString().split('T')[0];
+      days.push({ label: dayName, value: formattedDate });
+    }
+
+    return days;
+  };
+
+  const dateOptions = getNext7Days();
 
   const fetchMovie = async () => {
     try {

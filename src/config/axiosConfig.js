@@ -14,8 +14,16 @@ const PUBLIC_URL = ['/auth/login', '/auth/register'];
 const PROTECTED_URL_PATTERNS = [
   /^\/showtimes\/[^/]+\/seats$/,
   /^\/bookings\/[^/]+$/,
-  /^\/bookings$/,
   /^\/bookings\/history$/,
+];
+const POST_PROTECTED_URL_PATTERNS = [
+  /^\/bookings$/,
+  /^\/actors$/,
+  /^\/directors$/,
+  /^\/genres$/,
+  /^\/movies$/,
+  /^\/showtimes$/,
+  /^\/bookings$/,
 ];
 
 const AxiosInstance = axios.create({
@@ -27,6 +35,9 @@ const AxiosInstance = axios.create({
 const isProtectedUrl = (url) => {
   return PROTECTED_URL_PATTERNS.some(pattern => pattern.test(url));
 };
+const isPostProtectedUrl = (url) => {
+  return POST_PROTECTED_URL_PATTERNS.some(pattern => pattern.test(url));
+}
 
 const _get = (url, config = {}) => {
   if (isProtectedUrl(url)) {
@@ -46,7 +57,7 @@ const _put = (url, data = {}, config = {}) => {
 const _post = (url, data = {}, config = {}) => {
   if (PUBLIC_URL.includes(url)) {
     return AxiosInstance.post(url, data);
-  } else if (isProtectedUrl(url)) {
+  } else if (isPostProtectedUrl(url)) {
     return AxiosInstance.post(url, data, PROTECTED_HEADERS);
   } else {
     return AxiosInstance.post(url, data, config);

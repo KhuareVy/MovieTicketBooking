@@ -22,7 +22,7 @@ export default function MovieCard ({ movie }) {
       <>
         <Card
         hoverable
-        style={{ width: '400', position: 'relative', alignItems:'center' }}
+        style={{ width: '400',height: '300' , position: 'relative', alignItems:'center' }}
         cover={<img alt={movie.title} src={movie.posterURL} />}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
