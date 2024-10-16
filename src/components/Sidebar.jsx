@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { Menu } from 'antd';
 import { UserOutlined, VideoCameraOutlined, CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -8,24 +9,24 @@ const Sidebar = () => {
     {
       key: '1',
       icon: <UserOutlined />,
-      label: <NavLink to="/users">Quản lý người dùng</NavLink>,
+      label: <NavLink to="users">Quản lý người dùng</NavLink>,
     },
     {
       key: '2',
       icon: <VideoCameraOutlined />,
-      label: <NavLink to="/movies">Quản lý phim</NavLink>,
+      label: <NavLink to="movies">Quản lý phim</NavLink>,
     },
     {
       key: '3',
       icon: <CalendarOutlined />,
-      label: <NavLink to="/schedule">Quản lý lịch chiếu</NavLink>,
+      label: <NavLink to="schedule">Quản lý lịch chiếu</NavLink>,
     },
-    // {
-    //   key: '4',
-    //   icon: <LogoutOutlined />,
-    //   label: 'Đăng xuất',
-    //   danger: true,
-    // },
+    {
+      key: '4',
+      icon: <LogoutOutlined />,
+      label: 'Đăng xuất',
+      danger: true,
+    },
   ];
 
   return (

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Card } from 'antd';
 import { ShoppingCartOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import TrailerModal from './TrailerModel';
+import { Link } from 'react-router-dom';
 
 export default function MovieCard ({ movie }) {
     const { Meta } = Card;
@@ -71,7 +72,8 @@ export default function MovieCard ({ movie }) {
                     gap: '5px',
                 }}
                 >
-                <ShoppingCartOutlined /> Mua vé
+                <ShoppingCartOutlined />
+                <Link to={`/phim-dang-chieu/${movie.id}`}>Mua vé</Link>
                 </button>
                 <button
                 style={{

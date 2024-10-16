@@ -1,13 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { Table, Select, Input, Button, Modal, Form, DatePicker, TimePicker, message, Spin } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { _get, _post } from '../config/axiosConfig';
 
 const { Option } = Select;
 
-export default function MovieScheduleManager() {
+export default function ScheduleManagement() {
   const [schedules, setSchedules] = useState([]);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [selectedCinema, setSelectedCinema] = useState('ALL');

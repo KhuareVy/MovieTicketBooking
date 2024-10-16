@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Typography, Button, message, Spin } from 'antd';
 import { _get } from '../config/axiosConfig';
 import MovieCard from '../components/MovieCard';
+import { NavLink } from 'react-router-dom';
 
 export default function MovieList() {
   const { Title } = Typography;
@@ -47,7 +48,9 @@ export default function MovieList() {
             ))}
           </Row>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <Button type="primary">Xem thêm</Button>
+            <Button type="primary">
+              <NavLink to="/phim-dang-chieu">Xem thêm</NavLink>
+            </Button>
           </div>
         </>
       )}

@@ -144,6 +144,7 @@ const MovieForm = ({ visible, onCancel, onOk, form, editingMovie }) => {
   const handleAddGenre = async (values) => {
     console.log('values:', values);
     try {
+      
       const response = await _post('/genres', { name: values.newGenre });
       const newGenre = {
         value: response.data.id,
@@ -176,6 +177,7 @@ const MovieForm = ({ visible, onCancel, onOk, form, editingMovie }) => {
 
   const handleAddDirector = async (values) => {
     try {
+      console.log('values:', values);
       const response = await _post('/directors', { name: values.newDirector , birthDate: values.birthDay, picture: values.picture, countryID: values.country });
       const newDirector = {
         value: response.data.id,
