@@ -4,12 +4,12 @@ import { Menu, Dropdown, Space, Avatar, Button } from "antd";
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import styles from './Navbar.module.css'; // Import CSS Module
-import { useAuth } from "../../contextAPI/AuthContext";
+import { AuthConsumer } from "../../contextAPI/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { _get } from "../../config/axiosConfig";
 
 const Navbar = () => {
-  const { isLoggedIn, logout, userName } = useAuth();
+  const { isLoggedIn, logout, userName } = AuthConsumer();
   const navigate = useNavigate();
   const [cinemas, setCinemas] = useState([]);
 

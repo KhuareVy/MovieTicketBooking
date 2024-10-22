@@ -3,10 +3,10 @@ import React from 'react';
 import { Menu } from 'antd';
 import { UserOutlined, VideoCameraOutlined, CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '../contextAPI/AuthContext';
+import { AuthConsumer } from '../contextAPI/AuthContext';
 
 const Sidebar = () => {
-  const {logout} = useAuth();
+  const {logout} = AuthConsumer();
 
   const menuItems = [
     // {

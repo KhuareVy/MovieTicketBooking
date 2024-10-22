@@ -51,7 +51,7 @@ const _delete = (url, config = {}) => {
 };
 
 const _put = (url, data = {}, config = {}) => {
-  return AxiosInstance.put(url, data, config);
+  return AxiosInstance.put(url, data, PROTECTED_HEADERS);
 };
 
 const _post = (url, data = {}, config = {}) => {

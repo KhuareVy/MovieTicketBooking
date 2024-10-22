@@ -3,14 +3,14 @@ import React from 'react';
 import { Form, Input, Button, Typography, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contextAPI/AuthContext';
+import { AuthConsumer } from '../contextAPI/AuthContext';
 import { _post } from '../config/axiosConfig';
 
 const { Title } = Typography;
 
 export default function Login() {
   const [form] = Form.useForm();
-  const { login } = useAuth();
+  const { login } = AuthConsumer();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -33,6 +33,7 @@ export default function Login() {
 
       login(values.username, data.token);
       // navigate(redirectPath, { replace: true });
+      console.log('login token', data.token);
 
       if(data.roles === '[admin]') {
         navigate('/admin', { replace: true });

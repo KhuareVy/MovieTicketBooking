@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Card, Tag, Typography, Grid, message, Divider } from 'antd';
 import { _get, _post } from '../config/axiosConfig';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../contextAPI/AuthContext';
+import { AuthConsumer } from '../contextAPI/AuthContext';
 
 const { Text, Title } = Typography;
 const { useBreakpoint } = Grid;
@@ -16,7 +16,7 @@ const SeatSelection = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [socket, setSocket] = useState(null);
   const screens = useBreakpoint();
-  const { logout, userName } = useContext(AuthContext);
+  const { logout, userName } = AuthConsumer();
   const { showtimeid, movieid } = useParams();
   const [movie, setMovie] = useState(null);
   const navigate = useNavigate();

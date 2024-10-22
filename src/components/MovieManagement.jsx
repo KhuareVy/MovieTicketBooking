@@ -22,14 +22,15 @@ const MovieManagement = () => {
     const fetchMovies = async () => {
       try {
         const response = await _get('/movies');
-        if (Array.isArray(response.data)) {
-          const transformedData = transformMovieData(response.data);
+        const data = await response.data;
+        if (Array.isArray(data) && data.length > 0) {
+          const transformedData = transformMovieData(data);
           setMovies(transformedData);
           setFilteredMovies(transformedData);
 
           console.log('transformedData:', transformedData);
         } else {
-          console.error('API response is not an array:', response.data);
+          console.error('API response is not an array:', data);
           message.error('Failed to fetch movies');
         }
       } catch (error) {
@@ -42,6 +43,8 @@ const MovieManagement = () => {
 
     fetchMovies();
   }, []);
+
+  console.log('movies:', movies);
 
   const handleAdd = () => {
     setEditingMovie(null);
@@ -90,7 +93,7 @@ const MovieManagement = () => {
         console.log('updatedMovieData:', updatedMovieData);
         console.log('values:', values);
         const response = await _put(`/movies/${editingMovie.id}`, updatedMovieData);
-        const updatedMovie = response.data;
+        const updatedMovie = await response.data;
         updatedMovies = movies.map(movie => movie.id === editingMovie.id ? transformAMovieData(updatedMovie) : movie);
 
         message.success({
